@@ -1,2 +1,3 @@
 class Cuarto:
-    pass
+    def __init__(self, door):
+        self.door = door
