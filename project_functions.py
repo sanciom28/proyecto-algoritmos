@@ -1,5 +1,6 @@
 from Player import *
 from Text import *
+from Menu import *
 
 import time
 import pickle
@@ -61,6 +62,11 @@ def msg_error():
     return 'Error, intente de nuevo.\n> '
 def thanks():
     print('\nGracias por jugar.\n-MS\n')
+def pregame():
+    print('El juego iniciará pronto. Buena suerte!!')
+    for i in range(0,10):
+        print(f'{10-(i)}...')
+        time.sleep(1)
 
 #USER REGISTERING INPUT VALIDATIONS
 def enter_username(word,msg_1,msg_2):
@@ -99,6 +105,7 @@ def enter_avatar(n,msg_1,msg_2,arr):
             print(msg_2)
     return arr[n-1]
 
+#USER ADMINISTRATION
 def register(db):
     '''Register a new player.'''
 
@@ -142,7 +149,6 @@ def register(db):
     print('Usuario registrado.')
 
     return db #upon called, load data into txt with txt_loader()
-
 def authenticate(user,pw,db,msg_1,msg_2,msg_3):
     '''Authenticate user's credentials.'''
     while True:
@@ -153,7 +159,6 @@ def authenticate(user,pw,db,msg_1,msg_2,msg_3):
                 if db[i].psw == pw:
                     return db[i]
         print(msg_3)
-
 def login(db):
     '''Log in as an existing player.'''
 
@@ -169,9 +174,13 @@ def login(db):
     #START LOGIN PROCESS
     blank()
     login_key = authenticate(username,psw,db,msg_username,msg_psw,msg_incorrect)
+    blank()
     print('Ingresado al sistema correctamente.')
 
-def difficulty():
+    return login_key
+
+#MENU TAMPERING
+def difficulty(player):
     '''Choosing the game's difficulty.'''
 
     diff = input('''
@@ -194,6 +203,44 @@ def difficulty():
     
     > ''')
 
+    while True:
+
+        if diff == '1':
+            player.difficulty = 'Fácil'
+            player.lives = 5.0
+            player.clues = 5
+            player.timer = 60.00
+            break
+
+        elif diff == '2':
+            player.difficulty = 'Medio'
+            player.lives = 3.0
+            player.clues = 3
+            player.timer = 40.00
+            break
+
+        elif diff == '3':
+            player.difficulty = 'Difícil'
+            player.lives = 1.0
+            player.clues = 2
+            player.timer = 20.00
+            break
+
+        elif diff == '4':
+            #EXTREME DIFFICULTY (SECRET)
+            player.difficulty = 'Imposible'
+            player.lives = 0.5
+            player.clues = 0
+            player.timer = 10.00
+            break
+            
+
+        else:
+            diff = input(msg_error())
+
+    print(f'Dificultad puesta a "{player.difficulty}".')
+    blank()
+    return player
 def option_1():
     '''1st option from main menu.'''
 
@@ -207,8 +254,11 @@ def option_1():
     while True:
 
         if option == '1':
-            login(players_list)
-            difficulty()
+            player = login(players_list)
+            player = difficulty(player)
+            blank()
+            pregame()
+            exit()
 
         elif option == '2':
             register(players_list)
@@ -222,7 +272,6 @@ def option_1():
             option = input(msg_error())
 
     main_alpha()
-
 def option_2():
     '''2nd option from main menu.'''
 
@@ -231,12 +280,21 @@ def option_2():
     instructions.show()
     instructions.proceed()
     main_alpha()
-
 def option_3():
     '''3rd option from main menu.'''
-    
-    pass
 
+    blank()
+    print('Usuarios Registrados:\n')
+    for i in range(len(players_list)):
+        print(f'{1+i}. {players_list[i].username}')
+    blank()
+
+    main_alpha()
+def option_4():
+    thanks()
+    exit()
+
+#TEMPORARY MAIN
 def main_alpha():
     '''temporary main()'''
     option = menu()
@@ -252,10 +310,24 @@ def main_alpha():
             option_3()
 
         elif option == '4':
-            thanks()
-            exit()
+            option_4()
         
         else:
             option = input(msg_error())
 
-main_alpha()
+def main_beta():
+    '''more solid main() prototype'''
+    Menu.header()
+
+def main_epsilon():
+    '''apyr'''
+    menu = Menu()
+    print(menu.header)
+    
+    while True:
+        option = input(menu.main_menu)
+        option = menu.get_option(option,option_1(),option_2(),option_3(),option_4())
+        exit()
+
+
+main_epsilon()

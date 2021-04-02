@@ -6,3 +6,6 @@ class Son(Father):
 
 matteo = Son()
 print(type(matteo))
+
+for i in range(0,10):
+    print('a')

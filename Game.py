@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 
 class Game(ABC):
     '''Escapemet game blueprint.'''
-    def __init__(self, name, requirement, award, rules, questions, message_requirement=False):
+    def __init__(self, name, requirement, award, rules, questions, message_requirement):
         self.name = name
         self.requirement = requirement
         self.award = award
