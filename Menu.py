@@ -9,8 +9,8 @@ class Menu:
     ▀▀▀ ▀▀▀ ▀▀▀ ▀░░▀ █▀▀▀ ▀▀▀ ▀░░░▀ ▀▀▀ ░░▀░░
     ''')
 
-    time.sleep(1)
-    
+    #time.sleep(1)
+
     select = input('''
     Bienvenid@s a Escapemet 🔐
     aaa

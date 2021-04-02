@@ -8,7 +8,7 @@ def main():
     while true
     main menu
         sub menus
-    goodbye
+    
     '''
 
 main()
