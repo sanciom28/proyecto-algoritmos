@@ -14,11 +14,14 @@ class Player:
         self.current_room = 'Biblioteca'
 
     def show(self):
-        return f'{self.username},{self.psw},{self.age},{self.avatar},{self.times},{self.lives},{self.clues}'
+        return f'{self.username}, {self.psw}, {self.age}, {self.avatar}, {self.times}, {self.lives}, {self.clues}'
 
 
-    def move(self):
-        pass
+    def move(self,room_a,room_b):
+        '''Move from room A to room B.'''
+        #TODO: validate if room is accesible.
+        self.current_room = room_b
+        return self.current_room
 
     def touch(self):
         pass

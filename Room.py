@@ -1,6 +1,4 @@
 
-from API import api
-
 class Room:
     '''Escapemet's rooms blueprint.'''
     def __init__(self, name, objects):
