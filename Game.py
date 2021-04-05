@@ -769,6 +769,3 @@ class Game:
 
     def play_juego_libre(self):
         '''Aquí es cuando rompo la cuarta pared.'''
-
-for i in range(10000):
-    print(i)

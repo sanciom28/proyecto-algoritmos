@@ -7,14 +7,14 @@ class Player:
         self.age = age
         self.avatar = avatar
         self.times = []
-        self.difficulty = difficulty
+        self.difficulty = 'Dificultad'
         self.lives = 0.0
         self.clues = 0
         self.timer = 60.00
-        self.current_room = 'Biblioteca'
+        self.current_room = 'biblioteca'
 
     def show(self):
-        return f'{self.username}, {self.psw}, {self.age}, {self.avatar}, {self.times}, {self.lives}, {self.clues}'
+        return f'{self.username}, {self.psw}, {self.age}, {self.avatar}, {self.times}, {self.difficulty},{self.lives}, {self.clues},{self.timer},{self.current_room}'
 
 
     def move(self,room_a,room_b):
