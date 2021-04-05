@@ -1,5 +1,9 @@
 import time
 import random
+
+from sympy import Derivative, Subs, symbols, Function, init_printing
+from math import pi
+
 from GameFunctions import *
 
 class Game:
@@ -17,10 +21,146 @@ class Game:
         return f'Nombre del juego: {self.name}'
 
 
-    #TODO: DIFFERENT GAME METHODS (7/13)
+    #TODO: DIFFERENT GAME METHODS (12/13)
 
-    def play_sopa_letras(self):
-        pass
+    def play_sopa_letras(self,lives,clues,words,clue_list):
+        '''Sopa de letras.'''
+
+        #VARIABLES
+        size = 15
+        board = [['_' for i in range(size)] for i in range(size)]
+        d = ['-','|','/','\\']
+        alphabet = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
+        count = 0
+
+        #PRINTS BOARD
+        def show_board():
+            for i in range(size):
+                print('\t' + ' '.join(board[i]))
+
+        #PLACING WORDS
+        for word in words:
+
+            #RANDOMLY CHOOSING TO FLIP THE WORD
+            flip = random.randrange(2)
+            if flip == 1:
+                word = word[::-1]
+            word = word.upper()
+
+            fit = False
+            while not fit:
+                direction = random.choice(d)
+
+                if direction == d[0]:
+                    #HORIZONTAL
+                    x = 1
+                    y = 0
+
+                elif direction == d[1]:
+                    #VERTICAL
+                    x = 0
+                    y = 1
+
+                elif direction == d[2]:
+                    #DIAGONAL UP
+                    x = 1
+                    y = 1
+
+                else:
+                    #DIAGONAL DOWN
+                    x = 1
+                    y = -1
+
+                #STARTING POINT
+                start_x = random.randrange(size)
+                start_y = random.randrange(size)
+
+                #CHECKING IF IT FITS
+                end_x = start_x + len(word)*x
+                end_y = start_y + len(word)*y
+
+                if end_x < 0 or end_x >= size:
+                    continue
+                if end_y < 0 or end_y >= size:
+                    continue
+
+                fail = False
+
+                for i in range(len(word)):
+
+                    next_x = start_x + i*x
+                    next_y = start_y + i*y
+
+                    new_char = board[next_x][next_y]
+                    #CHECK IF A LETTER IS ALREADY ON THAT SPACE
+                    if new_char != '_':
+                        if new_char == word[i]:
+                            continue
+                        else:
+                            fail = True
+                            break
+
+                if fail:
+                    continue
+
+                else:
+                    for i in range(len(word)):
+                        next_x = start_x + i*x
+                        next_y = start_y + i*y
+                        board[next_x][next_y] = word[i]
+
+                    fit = True
+
+        #FILLING THE REST OF THE BOARD
+        for i in range(size):
+            for j in range(size):
+                if board[i][j] == '_':
+                    board[i][j] = random.choice(alphabet).upper()
+
+        while True:
+
+            if len(words) == 0:
+                break
+
+            blank()
+            show_board()
+            blank()
+            print('Ingrese las palabras aquí.')
+            x = input('> ').lower()
+
+            if x == 'clue':
+                if count == len(clue_list):
+                    no_more_clues()
+                    blank()
+                    continue
+                use_clue(clues)
+                blank()
+                print(clue_list[count])
+                count+=1
+                continue
+
+            found = False
+            for i,word in enumerate(words):
+                if x == word.lower():
+                    blank()
+                    correct()
+                    found = True
+                    print(f'La palabra era: {word}')
+                    words.pop(i)
+                    time.sleep(2)
+                    wipe()
+                    break
+
+            if not found:
+                blank()
+                incorrect()
+                lives = lose_lives(lives,0.5)
+                time.sleep(2)
+
+        blank()
+        you_won(self.name)
+
+        return self.award
 
     def play_preguntas_python(self,lives,clues,q,a,clue_list):
         '''Preguntas sobre Python.'''
@@ -221,14 +361,176 @@ class Game:
 
         return self.award
 
-    def play_preguntas_math(self):
-        pass
+    def play_preguntas_math(self,lives,clues,q,clue_list): #TODO: INCOMPLETE
+        '''Preguntas matemáticas.'''
 
-    def play_criptograma(self):
-        pass
+        #VARIABLES
+        a = 'a'
+        eq = q.split('f(x)=')[1]
+        evaluada = 'test'
+        count = 0
+        
 
-    def play_encuentra_logica(self):
-        pass
+        #CALCULATE DERIVATIVE RESULT
+        x, y, z = symbols('x y z')
+        init_printing(use_unicode=True)
+        f, g = symbols('f g', cls=Function)
+        a = Derivative(eq,x,evaluate=pi)
+        a.subs(x,y)
+        
+        while True:
+            print(q)
+            x = input('> ')
+
+            #USER USES A CLUE
+            if x.lower() == 'clue':
+                if count == len(clue_list):
+                    no_more_clues()
+                    blank()
+                    continue
+                blank()
+                use_clue(clues)
+                print(clue_list[count])
+                blank()
+                count+=1
+                continue
+
+            if x == a:
+                break
+
+            blank()
+            incorrect()
+            lives = lose_lives(lives,0.25)
+            blank()
+
+        blank()
+        correct()
+        you_won(self.name)
+
+        return self.award
+
+    def play_criptograma(self,lives,q):
+        '''Criptograma.'''
+
+        #VARIABLES
+        d = q['desplazamiento']
+        q = q['question'].replace('á','a')
+        alphabet = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
+        alphabet_d = []
+
+        #CREATING CYPHERED ALPHABET
+        for i,letter in enumerate(alphabet):
+            if i >= d:
+                alphabet_d.append(letter)
+        for letter in alphabet:
+            if letter in alphabet_d:
+                break
+            alphabet_d.append(letter)
+
+        #CYPHERING MESSAGE
+        q_d = ''
+        for char in q:
+            for i,letter in enumerate(alphabet):
+                if char.lower() == letter:
+                    q_d += alphabet_d[i]
+                    break
+            else:
+                q_d += char
+
+        while True:
+
+            blank()
+            print(str(alphabet).upper().replace("'","").replace(", ","-").replace("[","").replace("]",""))
+            print(str(alphabet_d).upper().replace("'","").replace(", ","-").replace("[","").replace("]",""))
+            blank()
+            print('Descifra el siguiente mensaje:')
+            print(q_d)
+            blank()
+            x = input('> ').lower()
+
+            if x == 'clue':
+                print('No hay pistas aquí.')
+                continue
+
+            if x == q_d:
+                blank()
+                correct()
+                break
+
+            blank()
+            incorrect()
+            lives = lose_lives(lives,1)
+
+        blank()
+        you_won(self.name)
+
+        return self.award
+
+    def play_encuentra_logica(self,lives,q):
+        '''Lógica booleana.'''
+
+        #VARIABLES
+        emoji_list = []
+        results_list = []
+        operations_list = []
+
+        #CREATING EMOJI-ONLY LIST
+        for i in q:
+            if not i.isascii() and i != '\n' and i not in emoji_list:
+                emoji_list.append(i)
+
+        #CREATING RESULT-ONLY LIST
+        for i,n in enumerate(q):
+            if n.isnumeric():
+
+                if q[i-1].isnumeric():
+                    continue
+
+                result = n
+                j = 1
+                while q[i+j].isnumeric():
+                    result += q[i+j]
+                    j += 1
+                results_list.append(int(result))
+
+        #CREATING MATH OPERATIONS LIST
+        for i in q.split(' \n '):
+            operations_list.append(i)
+            
+        #ACABO DE LEER EL DOC Y VI QUE ESTAS PREGUNTAS NO SE MODIFICARAN 🤡
+        #IGUAL DEJO LO ANTERIOR, ME FAJE MUCHO PARA BORRARLO 🥲
+
+        if results_list[0] == 45:
+            a = 67
+        elif results_list[0] == 27:
+            a = 41
+
+        blank()
+        while True:
+            try:
+                for i in operations_list:
+                    print(i)
+                blank()
+                x = input('> ')
+                if x.lower() == 'clue':
+                    blank()
+                    use_clue(-1)
+                    blank()
+                    continue
+                if int(x) != a:
+                    raise Exception
+                break
+            except:
+                blank()
+                incorrect()
+                lives = lose_lives(lives,0.5)
+                blank()
+        
+        blank()
+        correct()
+        you_won(self.name)
+        
+        return self.award
 
     def play_quizizz_unimet(self,lives,clues,db):
         '''Quizziz de cultura general UNIMET.'''
@@ -299,14 +601,88 @@ class Game:
         while True:
             pass
 
-    def play_memoria(self):
-        pass
+    def play_memoria(self,lives,q):
+        '''Memoria.'''
 
+        #TRANSFORM STRING INTO LIST
+        q = eval(q)
+
+        #BOARD FUNCTIONS
+        def board(arr):
+            b = f'''
+            [{arr[0]}][{arr[1]}][{arr[2]}][{arr[3]}]
+            [{arr[4]}][{arr[5]}][{arr[6]}][{arr[7]}]
+            [{arr[8]}][{arr[9]}][{arr[10]}][{arr[11]}]
+            [{arr[12]}][{arr[13]}][{arr[14]}][{arr[15]}]
+            '''
+            return b
+
+        #VARIABLES
+        guesses = ['3','4','5','6','E','R','T','Y','D','F','G','H','C','V','B','N']
+        el = []
+        for i in q:
+            for j in i:
+                el.append(j)
+        kl = list(guesses)
+        matches = 0
+
+        while matches < 8:
+
+            print(board(kl))
+            x = input('Ingresa el número o letra de la primera carta:\n> ').upper()
+            while x not in guesses:
+                x = input('Intenta de nuevo.\n> ').upper()
+            for i in range(len(kl)):
+                if x == kl[i]:
+                    #SHOW CARD
+                    first = el[i]
+                    first_index = i
+                    kl[i] = el[i]
+            
+            print(board(kl))
+            y = input('Ingresa el número o letra de la segunda carta:\n> ').upper()
+            while y not in guesses or y == x:
+                y = input('Intenta de nuevo.\n> ').upper()
+            for i in range(len(kl)):
+                if y == kl[i]:
+                    #SHOW CARD
+                    second = el[i]
+                    second_index = i
+                    kl[i] = el[i]
+
+            print(board(kl))
+            kl = list(guesses)
+
+            if first == second:
+                correct()
+                matches += 1
+                guesses[first_index] = first
+                guesses[second_index] = second
+                kl = list(guesses)
+            
+            else:
+                incorrect()
+                lives = lose_lives(lives, 0.25)
+
+            time.sleep(2)
+            first = 'a'
+            second = 'b'
+            wipe()
+
+        blank()
+        you_won(self.name)
+
+        return self.award
+        
     def play_logica_booleana(self,lives,q,a):
         '''lógica booleana.'''
 
         while True:
             x = input(q).capitalize()
+            if x == 'Clue':
+                use_clue(-1)
+                blank()
+                continue
             if x != a:
                 incorrect()
                 lives = lose_lives(lives,0.5)
@@ -339,6 +715,12 @@ class Game:
             blank()
             x = input('> ').lower()
 
+            #USER ATTEMPTS TO USE CLUE
+            if x == 'clue':
+                use_clue(-1)
+                blank()
+                continue
+
             #CHECKING IF INPUT IS IN LIST
             found = False
             for i in range(len(a)):
@@ -367,8 +749,8 @@ class Game:
         att = 0
         while True:
             try:
-                x = int(input(q))
-                if x != a:
+                x = input(q)
+                if int(x) != a:
                     raise Exception
                 break
             except:
@@ -381,44 +763,12 @@ class Game:
 
         blank()
         correct()
+        you_won(self.name)
 
         return self.award
 
     def play_juego_libre(self):
-        pass
+        '''Aquí es cuando rompo la cuarta pared.'''
 
-
-db_test = [
-{
-"question": "Me encuentro en la entrada de la Universidad",
-"answer": "Metromix",
-"clue_1": "sitio de comida",
-"clue_2": "al lado de las copias",
-"clue_3": "Comienza por Metro"
-},
-{
-"question": "Me buscan y nunca me encuentran en la Universidad",
-"answer": "Piscina",
-"clue_1": "Es rectangular",
-"clue_2": "Tiene agua",
-"clue_3": "Se puede nadar"
-},
-{
-"question": "Tienes que subir muchos pisos para llegar a mi",
-"answer": "Rectorado",
-"clue_1": "Esta en el Eugenio Mendoza",
-"clue_2": "Ultimo piso del Eugenio",
-"clue_3": "Oficina del Rector"
-}
-]
-
-#RANDOM QUESTION INDEX
-nn = random.randint(0,2)
-#CLUE LIST
-cl = [w for w in db_test[nn].values()]
-cl.pop(0)
-cl.pop(0)
-
-game_test = Game(2,2,'Juego de prueba',2,2,2)
-
-game_test.play_ahorcado(1,3,db_test[nn]['question'],db_test[nn]['answer'],cl)
+for i in range(10000):
+    print(i)

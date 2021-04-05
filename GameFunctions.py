@@ -12,7 +12,10 @@ def blank():
     print('\n')
 def you_won(game):
     print(f'{game} completado!')
+def wipe():
+    print('\n'*70)
 
+#LIVES/CLUES MODIFIERS
 def lose_lives(m,n):
     '''Lose n amount of lives.'''
 
@@ -27,16 +30,18 @@ def lose_lives(m,n):
         return m - n
 
     print('Te has quedado sin vidas. 😭\n')
-    #TODO: THIS ALREADY EXISTS AS thanks()
+    #TODO: SAVE GAME
     print('Muchas gracias por jugar!')
     print('-MS')
     exit()
-
-
 def use_clue(clues):
     '''Use a clue.'''
 
-    if clues <= 0:
+    if clues < 0:
+        print('No hay pistas disponibles aquí.')
+        return clues
+
+    elif clues == 0:
         print('Ya usaste todas tus pistas. 😕')
         return clues
 
@@ -48,10 +53,6 @@ def use_clue(clues):
 
     print('Ya no te quedan más pistas. 😭')
     return clues
-
-
-
-
 
 
 #FUNCTIONS FOR SPECIFIC GAMES
@@ -73,7 +74,6 @@ def how_close_clue(a,b):
 
     else:
         print('Estás muy abajo.')
-
 def scramble(arr):
     '''Scramble a list of words' letters.'''
 

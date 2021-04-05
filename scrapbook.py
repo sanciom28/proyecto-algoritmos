@@ -1,3 +1,5 @@
+import random
+
 # class Father:
 #     print('executing father class')
 
@@ -39,5 +41,22 @@
 # leg = '\\'
 # print(leg)
 
-lista = ['a' for a in range(10)]
-print(lista)
+# lista = ['a' for a in range(10)]
+# losta = list(lista)
+# print(losta is lista)
+
+# string = 'test string.'
+# # for i,n in enumerate(string):
+# #     print(f'{i+1}. {n}')
+# string += ' this is still a test.'
+# print(string)
+
+# for i in string.split(' '):
+#     print(i)
+
+word = 'hola'
+flip = random.randrange(2)
+if flip == 1:
+    word = word[::-1]
+print(word)
+print(flip)
