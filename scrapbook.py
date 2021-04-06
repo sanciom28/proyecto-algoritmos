@@ -1,4 +1,5 @@
 import random
+import time
 
 # class Father:
 #     print('executing father class')
@@ -54,9 +55,14 @@ import random
 # for i in string.split(' '):
 #     print(i)
 
-word = 'hola'
-flip = random.randrange(2)
-if flip == 1:
-    word = word[::-1]
-print(word)
-print(flip)
+# word = 'hola'
+# flip = random.randrange(2)
+# if flip == 1:
+#     word = word[::-1]
+# print(word)
+# print(flip)
+
+zero = time.time()
+time.sleep(1)
+one = time.time()
+print(one-zero)

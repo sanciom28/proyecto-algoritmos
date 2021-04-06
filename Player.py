@@ -11,20 +11,24 @@ class Player:
         self.lives = 0.0
         self.clues = 0
         self.timer = 60.00
-        self.current_room = 'biblioteca'
+        self.current_room = ''
+        self.start_time = 0
+        self.current_time = 0
 
     def show(self):
         return f'{self.username}, {self.psw}, {self.age}, {self.avatar}, {self.times}, {self.difficulty},{self.lives}, {self.clues},{self.timer},{self.current_room}'
 
 
-    def move(self,room_a,room_b):
-        '''Move from room A to room B.'''
-        #TODO: validate if room is accesible.
-        self.current_room = room_b
+    def move(self,room):
+        '''Move to another room.'''
+        self.current_room = room
         return self.current_room
 
-    def touch(self):
-        pass
+    def check_time(self):
+        '''Checks if'''
+        if self.current_time - self.start_time > self.timer*60:
+            return True
+        return False
 
     def save_item(self):
         pass
@@ -32,5 +36,3 @@ class Player:
     def use_item(self):
         pass
 
-    def use_clue(self):
-        pass

@@ -46,6 +46,10 @@ def give_up():
             exit()
 def wait():
     time.sleep(2)
+def out_of_time():
+    print('\nLo siento, te has quedado sin tiempo. 😪\n')
+    thanks()
+    exit()
 
 #SERIALIZACION
 def txt_receiver(txt_name, db):
@@ -450,11 +454,18 @@ def smash_att(inv):
     return False
 
 #BEGIN GAME
-def game():
+def create_q_list(db,q,n):
+    '''Creates a list of question parameters.'''
 
+    db = db[random.randrange(q)]
+    arr = [_ for _ in db.values()]
+    arr = arr[0:n]
+    return arr
+def create_c_list(db,q,n):
+    '''Creates a list of clue parameters.'''
 
-
-    if player.current_room == 'biblioteca':
-        pass
-
-
+    db = db[random.randrange(q)]
+    arr = [_ for _ in db.values()]
+    for i in range(n):
+        arr.pop(0)
+    return arr

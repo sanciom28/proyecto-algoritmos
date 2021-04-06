@@ -109,6 +109,7 @@ def main():
     lives = player.lives
     clues = player.clues
     timer = player.timer
+    player.start_time = time.time()
     inventario = Inventory()
     player.current_room = biblioteca
 
@@ -119,6 +120,10 @@ def main():
 
     while True:
 
+        player.current_time = time.time()
+        if player.check_time():
+            out_of_time()
+
         if player.current_room == biblioteca:
             #BIBLIOTECA
             wipe()
@@ -126,28 +131,41 @@ def main():
             option = select.t().lower()
 
             if option == '1':
-                #MUEBLE DE SENTARSE
+                #MUEBLE DE SENTARSE / PREGUNTAS MATEMATICA
                 option = sentarse.interact()
                 if option:
-                    pass
+                    q = create_q_list(ahorcado.questions,len(ahorcado.questions),1)
+                    c_list = create_c_list(ahorcado.questions,len(ahorcado.questions),2)
+                    item = preguntas_math.play_preguntas_math(lives,clues,q,c_list)
+                    inventario.add(item)
 
             elif option == '2':
-                #MUEBLE DE LIBROS
+                #MUEBLE DE LIBROS / AHORCADO
                 option = libros.interact()
                 if option:
-                    pass
+                    q_list = create_q_list(ahorcado.questions,len(ahorcado.questions),2)
+                    q = q_list[0]
+                    a = q_list[1]
+                    c_list = create_c_list(ahorcado.questions,len(ahorcado.questions),2)
+                    item = ahorcado.play_ahorcado(lives,clues,q,a,c_list)
+                    inventario.add(item)
 
             elif option == '3':
-                #MUEBLE DE GAVETAS
+                #MUEBLE DE GAVETAS / CRIPTOGRAMA
                 option = gavetas.interact()
                 if option:
-                    pass
+                    q = create_q_list(ahorcado.questions,len(ahorcado.questions),1)
+                    item = criptograma.play_criptograma(lives,q)
+                    inventario.add(item)
 
             elif option == 'l':
-                player.current_room = plaza
+                player.move(plaza)
 
             elif option == 'r':
-                player.current_room = pasillo
+                player.move(pasillo)
+
+            elif option == 'i':
+                print(inventario.show())
 
         elif player.current_room == plaza:
             #PLAZA RECTORADO
@@ -178,7 +196,10 @@ def main():
                 give_up()
 
             elif option == 'r':
-                player.current_room = biblioteca
+                player.move(biblioteca)
+
+            elif option == 'i':
+                print(inventario.show())
 
         elif player.current_room == pasillo:
             #PASILLO
@@ -192,8 +213,11 @@ def main():
                 if option:
                     pass
 
+            elif option == 'i':
+                print(inventario.show())
+
             else:
-                player.current_room = biblioteca
+                player.move(biblioteca)
 
         elif player.current_room == laboratorio:
             #LABORATORIO
@@ -205,16 +229,25 @@ def main():
                 pass
 
             elif option == '2':
-                pass
+                #PIZARRA
+                option = pizarra.interact()
+                if option:
+                    q_list = create_q_list(sopa_letras.questions,len(sopa_letras.questions),3)
+                    c_list = create_c_list(sopa_letras.questions,len(sopa_letras.questions),3)
+                    item = sopa_letras.play_sopa_letras(lives,clues,q_list,c_list)
+                    inventario.add(item)
 
             elif option == '3':
                 pass
 
             elif option == 'l':
-                player.current_room = servidores
+                player.move(servidores)
 
             elif option == 'r':
-                player.current_room = biblioteca
+                player.move(biblioteca)
+
+            elif option == 'i':
+                print(inventario.show())
 
         elif player.current_room == servidores:
             #SERVIDORES
@@ -232,7 +265,10 @@ def main():
                 pass
 
             elif option == 'r':
-                player.current_room = laboratorio
+                player.move(laboratorio)
+
+            elif option == 'i':
+                print(inventario.show())
     
 
 
