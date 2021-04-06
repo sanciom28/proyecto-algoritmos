@@ -162,7 +162,7 @@ class Game:
         you_won(self.name)
         blank()
 
-        return self.award
+        return self.award,lives,clues
 
     def play_preguntas_python(self,lives,clues,q,a,clue_list):
         '''Preguntas sobre Python.'''
@@ -224,7 +224,7 @@ class Game:
         you_won(self.name)
         blank()
 
-        return self.award
+        return self.award,lives,clues
 
     def play_adivinanzas(self,lives,clues,q,a,clue_list):
         '''Adivinanzas.'''
@@ -260,7 +260,7 @@ class Game:
         you_won(self.name)
         blank()
         
-        return self.award
+        return self.award,lives,clues
 
     def play_ahorcado(self,lives,clues,q,a,clue_list):
         '''El ahorcado.'''
@@ -753,7 +753,7 @@ class Game:
         you_won(self.name)
         blank()
 
-        return self.award
+        return self.award,lives
 
     def play_escoge_numero_entre(self,lives,q,a):
         '''Escoger un número entre 1 y 15.'''
@@ -792,7 +792,7 @@ class Game:
         you_won(self.name)
         blank()
 
-        return self.award
+        return self.award,lives
 
     def play_juego_libre(self):
         '''Aquí es cuando rompo la cuarta pared.'''

@@ -112,6 +112,7 @@ def main():
     player.start_time = time.time()
     inventario = Inventory()
     player.current_room = biblioteca
+    lab_access = False
 
     #pregame()
 
@@ -194,7 +195,10 @@ def main():
                 player.move(plaza)
 
             elif option == 'r':
-                player.move(pasillo)
+                if lab_access:
+                    player.move(laboratorio)
+                else:
+                    player.move(pasillo)
 
             elif option == 'i':
                 print(inventario.show())
@@ -279,6 +283,8 @@ def main():
                         item,lives = logica_booleana.play_logica_booleana(lives,q,a)
                         inventario.add(item)
                         logica_booleana.played = True
+                        lab_access = True
+                        player.move(laboratorio)
                         proceed()
                     else:
                         already_played()
@@ -299,21 +305,54 @@ def main():
             option = select.t().lower()
 
             if option == '1':
-                pass
+                #COMPUTADORA 1 / PREGUNTAS PYTHON
+                if option:
+                    if not preguntas_python.played:
+                        q_list = create_q_list(preguntas_python.questions,len(preguntas_python.questions),2)
+                        q = q_list[0]
+                        a = q_list[1]
+                        c_list = create_c_list(preguntas_python.questions,len(preguntas_python.questions),2)
+                        item,lives,clues = preguntas_python.play_preguntas_python(lives,clues,q,a,c_list)
+                        inventario.add(item)
+                        preguntas_python.played = True
+                        proceed()
+                    else:
+                        already_played()
+                else:
+                    proceed()
 
             elif option == '2':
-                #PIZARRA
+                #PIZARRA / SOPA DE LETRAS
                 option = pizarra.interact(inventario.bag)
                 if option:
-                    q_list = create_q_list(sopa_letras.questions,len(sopa_letras.questions),3)
-                    c_list = create_c_list(sopa_letras.questions,len(sopa_letras.questions),3)
-                    item = sopa_letras.play_sopa_letras(lives,clues,q_list,c_list)
-                    inventario.add(item)
+                    if not sopa_letras.played:
+                        q_list = create_q_list(sopa_letras.questions,len(sopa_letras.questions),3)
+                        c_list = create_c_list(sopa_letras.questions,len(sopa_letras.questions),3)
+                        item = sopa_letras.play_sopa_letras(lives,clues,q_list,c_list)
+                        inventario.add(item)
+                        sopa_letras.played = True
+                        proceed()
+                    else:
+                        already_played()
                 else:
                     proceed()
 
             elif option == '3':
-                pass
+                #COMPUTADORA 2 / ADIVINANZAS
+                if option:
+                    if not adivinanzas.played:
+                        q_list = create_q_list(adivinanzas.questions,len(adivinanzas.questions),2)
+                        q = q_list[0]
+                        a = q_list[1]
+                        c_list = create_c_list(adivinanzas.questions,len(adivinanzas.questions),2)
+                        item,lives,clues = adivinanzas.play_adivinanzas(lives,clues,q,a,c_list)
+                        inventario.add(item)
+                        adivinanzas.played = True
+                        proceed()
+                    else:
+                        already_played()
+                else:
+                    proceed()
 
             elif option == 'l':
                 player.move(servidores)
@@ -332,13 +371,43 @@ def main():
             option = select.t().lower()
 
             if option == '1':
-                pass
+                #RACK / PALABRA MEZCLADA
+                option = rack.interact(inventario.bag)
+                if option:
+                    if not palabra_mezclada.played:
+                        q_list = create_q_list(palabra_mezclada.questions,len(palabra_mezclada.questions),3)
+                        q = q_list[0]
+                        c = q_list[1]
+                        a = q_list[2]
+                        item,lives = palabra_mezclada.play_palabra_mezclada(lives,q,c,a,scramble(a))
+                        inventario.add(item)
+                        palabra_mezclada.played = True
+                        proceed()
+                    else:
+                        already_played()
+                else:
+                    proceed()
 
             elif option == '2':
-                pass
+                #PUERTA / %(K7~L"P2>+_=
+                option = puerta.interact(inventario.bag)
+                print('HI4TUVE9WCU8HRUN8XEUHFD87EFUHD\n')
 
             elif option == '3':
-                pass
+                #PAPELERA / ESCOGE NUMERO
+                option = papelera.interact(inventario.bag)
+                if option:
+                    if not escoge_numero_entre.played:
+                        q_list = create_q_list(escoge_numero_entre.questions,len(escoge_numero_entre.questions),1)
+                        q = q_list[0]
+                        item,lives,clues = escoge_numero_entre.play_escoge_numero_entre(lives,q,random.randint(1,15))
+                        inventario.add(item)
+                        escoge_numero_entre.played = True
+                        proceed()
+                    else:
+                        already_played()
+                else:
+                    proceed()
 
             elif option == 'r':
                 player.move(laboratorio)
