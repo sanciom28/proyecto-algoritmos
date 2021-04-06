@@ -5,7 +5,7 @@ import time
 import os
 import pickle
 
-import clean_functions as func
+from ProjectFunctions import *
 
 from Text import *
 from Player import *
@@ -14,40 +14,37 @@ from API import api
 from Room import Room
 from Object import Object
 from Game import Game
+from Inventory import Inventory
 
 def main():
     '''ESCAPEMET.'''
 
     #VARIABLES
     players_list = []
-    player = 'player'
+    player = Player('test','000000','20','2')
     start_game = False
 
     #READ FILES
-    players_list = func.txt_receiver('/Users/matteosancio/Documents/UNIMET/VIII/Algoritmos./Proyecto/proyecto-algoritmos/datos.txt', players_list)
+    players_list = txt_receiver('/Users/matteosancio/Documents/UNIMET/VIII/Algoritmos./Proyecto/proyecto-algoritmos/datos.txt', players_list)
 
     #START MENU
     logo.p()
     while not start_game:
 
-        option = func.menu(4)
+        option = menu(4)
 
         if option == '1':
-            player = func.option_1(players_list,player)
+            player = option_1(players_list,player)
             start_game = True
         elif option == '2':
-            func.option_2()
+            option_2()
         elif option == '3':
-            func.option_3(players_list)
+            option_3(players_list)
         else:
-            func.option_4()
-
-    #BEGIN GAME
-    func.pregame()
-    func.wipe()
+            option_4()
 
     #LOAD ROOM, OBJECT AND GAME OBJECTS
-    print('Inicializando objetos, esto tomará un momento...')
+    print('Inicializando objetos, esto tomará un momento...\n')
 
     #CREATING ROOMS
     laboratorio = Room(api()[0]['name'], api()[0]['objects'])
@@ -106,6 +103,137 @@ def main():
     escoge_numero_entre = Game(papelera.game.get('message_requirement'),papelera.game['requirement'],papelera.game['name'],papelera.game['award'],papelera.game['rules'],papelera.game['questions'])
     juego_libre = Game(puerta.game.get('message_requirement'),puerta.game['requirement'],puerta.game['name'],puerta.game['award'],puerta.game['rules'],puerta.game['questions'])
 
-    print('Juego listo para comenzar.')
+    #PLAYER VARIABLES
+    username = player.username
+    avatar = player.avatar
+    lives = player.lives
+    clues = player.clues
+    timer = player.timer
+    inventario = Inventory()
+    player.current_room = biblioteca
+
+    #pregame()
+
+    narr_2.p()
+    proceed()
+
+    while True:
+
+        if player.current_room == biblioteca:
+            #BIBLIOTECA
+            wipe()
+            print(biblioteca_drawing(lives,clues))
+            option = select.t().lower()
+
+            if option == '1':
+                #MUEBLE DE SENTARSE
+                option = sentarse.interact()
+                if option:
+                    pass
+
+            elif option == '2':
+                #MUEBLE DE LIBROS
+                option = libros.interact()
+                if option:
+                    pass
+
+            elif option == '3':
+                #MUEBLE DE GAVETAS
+                option = gavetas.interact()
+                if option:
+                    pass
+
+            elif option == 'l':
+                player.current_room = plaza
+
+            elif option == 'r':
+                player.current_room = pasillo
+
+        elif player.current_room == plaza:
+            #PLAZA RECTORADO
+            wipe()
+            print(plaza_drawing(lives,clues))
+            option = select.t().lower()
+
+            if option == '1':
+                #BANCO 1
+                option = banco_1.interact()
+                if option:
+                    print('Testeao')
+                    pass
+
+            elif option == '2':
+                #SAMAN
+                option = saman.interact()
+                if option:
+                    pass
+
+            elif option == '3':
+                #BANCO 2
+                option = banco_2.interact()
+                if option:
+                    pass
+
+            elif option == 'l':
+                give_up()
+
+            elif option == 'r':
+                player.current_room = biblioteca
+
+        elif player.current_room == pasillo:
+            #PASILLO
+            wipe()
+            print(pasillo_drawing(lives,clues))
+            option = select.t().lower()
+
+            if option == '1':
+                #PUERTA PASILLO
+                option = puerta_pasillo.interact()
+                if option:
+                    pass
+
+            else:
+                player.current_room = biblioteca
+
+        elif player.current_room == laboratorio:
+            #LABORATORIO
+            wipe()
+            print(laboratorio_drawing(lives,clues))
+            option = select.t().lower()
+
+            if option == '1':
+                pass
+
+            elif option == '2':
+                pass
+
+            elif option == '3':
+                pass
+
+            elif option == 'l':
+                player.current_room = servidores
+
+            elif option == 'r':
+                player.current_room = biblioteca
+
+        elif player.current_room == servidores:
+            #SERVIDORES
+            wipe()
+            print(servidores_drawing(lives,clues))
+            option = select.t().lower()
+
+            if option == '1':
+                pass
+
+            elif option == '2':
+                pass
+
+            elif option == '3':
+                pass
+
+            elif option == 'r':
+                player.current_room = laboratorio
+    
+
 
 main()

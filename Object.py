@@ -7,10 +7,12 @@ class Object:
         self.game = game
 
 
-    def show(self):
-        return 'Objeto actual: {}\nPosición: {}\nJuego: {}'.format(self.name,self.position,self.game['name'])
-
     def interact(self):
-        pass #TODO
-
-
+        print('\nObjeto actual: {}\nJuego: {}\n'.format(self.name,self.game['name']))
+        if not self.game['requirement']:
+            option = input("Quieres jugar? (S/N)\n> ").lower()
+            if option == 's':
+                return True
+            return False
+        input('Aún no puedes jugar.')
+        return False

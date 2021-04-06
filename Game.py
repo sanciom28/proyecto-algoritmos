@@ -1,10 +1,10 @@
 import time
 import random
 
-from sympy import Derivative, Subs, symbols, Function, init_printing
+#from sympy import Derivative, Subs, symbols, Function, init_printing
 from math import pi
 
-from GameFunctions import *
+from ProjectFunctions import *
 
 class Game:
     '''Escapemet game blueprint.'''
@@ -361,7 +361,7 @@ class Game:
 
         return self.award
 
-    def play_preguntas_math(self,lives,clues,q,clue_list): #TODO: INCOMPLETE
+    def play_preguntas_math(self,lives,clues,q,clue_list):
         '''Preguntas matemáticas.'''
 
         #VARIABLES
@@ -372,11 +372,11 @@ class Game:
         
 
         #CALCULATE DERIVATIVE RESULT
-        x, y, z = symbols('x y z')
-        init_printing(use_unicode=True)
-        f, g = symbols('f g', cls=Function)
-        a = Derivative(eq,x,evaluate=pi)
-        a.subs(x,y)
+        # x, y, z = symbols('x y z')
+        # init_printing(use_unicode=True)
+        # f, g = symbols('f g', cls=Function)
+        # a = Derivative(eq,x,evaluate=pi)
+        # a.subs(x,y)
         
         while True:
             print(q)
@@ -759,7 +759,21 @@ class Game:
                 att += 1
                 if att != 0 and att % 3 == 0:
                     lives = lose_lives(lives,0.25)
-                how_close_clue(x,a)
+                
+                if not str(x).isnumeric():
+                    continue
+            
+                elif 0 < int(x)-a < 4:
+                    print('Estás un poco arriba.')
+            
+                elif 0 > int(x)-a > -4:
+                    print('Estás un poco abajo.')
+            
+                elif 4 <= int(x)-a <= 14:
+                    print('Estás muy arriba.')
+            
+                else:
+                    print('Estás muy abajo.')
 
         blank()
         correct()
