@@ -114,7 +114,7 @@ def main():
     player.current_room = biblioteca
     lab_access = False
 
-    #pregame()
+    pregame()
 
     narr_2.p()
     proceed()
