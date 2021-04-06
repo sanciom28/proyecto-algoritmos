@@ -84,7 +84,7 @@ def main():
     sopa_letras = Game(pizarra.game.get('message_requirement'),pizarra.game['requirement'],pizarra.game['name'],pizarra.game['award'],pizarra.game['rules'],pizarra.game['questions'])
     preguntas_python = Game(compu_1.game.get('message_requirement'),compu_1.game['requirement'],compu_1.game['name'],compu_1.game['award'],compu_1.game['rules'],compu_1.game['questions'])
     adivinanzas = Game(compu_2.game.get('message_requirement'),compu_2.game['requirement'],compu_2.game['name'],compu_2.game['award'],compu_2.game['rules'],compu_2.game['questions'])
-
+    
     #BIBLIOTECA GAMES
     ahorcado = Game(libros.game.get('message_requirement'),libros.game['requirement'],libros.game['name'],libros.game['award'],libros.game['rules'],libros.game['questions'])
     preguntas_math = Game(sentarse.game.get('message_requirement'),sentarse.game['requirement'],sentarse.game['name'],sentarse.game['award'],sentarse.game['rules'],sentarse.game['questions'])
@@ -124,39 +124,71 @@ def main():
         if player.check_time():
             out_of_time()
 
+        lives = inventario.check(lives)
+
+        timer = ((player.timer*60) - (player.current_time - player.start_time))/60
+        if timer < 10:
+            timer = seconds_calc(timer)
+            timer = timer[0:4].replace('.',':')
+ 
+        else:
+            timer = seconds_calc(timer)
+            timer = timer[0:5].replace('.',':')
+
         if player.current_room == biblioteca:
             #BIBLIOTECA
             wipe()
-            print(biblioteca_drawing(lives,clues))
+            print(biblioteca_drawing(lives,clues,timer))
             option = select.t().lower()
 
             if option == '1':
                 #MUEBLE DE SENTARSE / PREGUNTAS MATEMATICA
-                option = sentarse.interact()
+                option = sentarse.interact(inventario.bag)
                 if option:
-                    q = create_q_list(ahorcado.questions,len(ahorcado.questions),1)
-                    c_list = create_c_list(ahorcado.questions,len(ahorcado.questions),2)
-                    item = preguntas_math.play_preguntas_math(lives,clues,q,c_list)
-                    inventario.add(item)
+                    if not preguntas_math.played:
+                        q = create_q_list(preguntas_math.questions,len(preguntas_math.questions),1)
+                        c_list = create_c_list(preguntas_math.questions,len(preguntas_math.questions),2)
+                        item,lives,clues = preguntas_math.play_preguntas_math(lives,clues,q,c_list)
+                        inventario.add(item)
+                        preguntas_math.played = True
+                        proceed()
+                    else:
+                        already_played()
+                else:
+                    proceed()
 
             elif option == '2':
                 #MUEBLE DE LIBROS / AHORCADO
-                option = libros.interact()
+                option = libros.interact(inventario.bag)
                 if option:
-                    q_list = create_q_list(ahorcado.questions,len(ahorcado.questions),2)
-                    q = q_list[0]
-                    a = q_list[1]
-                    c_list = create_c_list(ahorcado.questions,len(ahorcado.questions),2)
-                    item = ahorcado.play_ahorcado(lives,clues,q,a,c_list)
-                    inventario.add(item)
+                    if not ahorcado.played:
+                        q_list = create_q_list(ahorcado.questions,len(ahorcado.questions),2)
+                        q = q_list[0]
+                        a = q_list[1]
+                        c_list = create_c_list(ahorcado.questions,len(ahorcado.questions),2)
+                        item,lives,clues = ahorcado.play_ahorcado(lives,clues,q,a,c_list)
+                        inventario.add(item)
+                        ahorcado.played = True
+                        proceed()
+                    else:
+                        already_played()
+                else:
+                    proceed()
 
             elif option == '3':
                 #MUEBLE DE GAVETAS / CRIPTOGRAMA
-                option = gavetas.interact()
+                option = gavetas.interact(inventario.bag)
                 if option:
-                    q = create_q_list(ahorcado.questions,len(ahorcado.questions),1)
-                    item = criptograma.play_criptograma(lives,q)
-                    inventario.add(item)
+                    if not criptograma.played:
+                        q = create_q_list(criptograma.questions,len(criptograma.questions),1)[0]
+                        item,lives = criptograma.play_criptograma(lives,q)
+                        inventario.add(item)
+                        criptograma.played = True
+                        proceed()
+                    else:
+                        already_played()
+                else:
+                    proceed()
 
             elif option == 'l':
                 player.move(plaza)
@@ -166,31 +198,59 @@ def main():
 
             elif option == 'i':
                 print(inventario.show())
+                proceed()
 
         elif player.current_room == plaza:
             #PLAZA RECTORADO
             wipe()
-            print(plaza_drawing(lives,clues))
+            print(plaza_drawing(lives,clues,timer))
             option = select.t().lower()
 
             if option == '1':
-                #BANCO 1
-                option = banco_1.interact()
+                #BANCO 1 / QUIZIZZ
+                option = banco_1.interact(inventario.bag)
                 if option:
-                    print('Testeao')
-                    pass
+                    if not quizizz_unimet.played:
+                        item,lives,clues = quizizz_unimet.play_quizizz_unimet(lives,clues,quizizz_unimet.questions)
+                        inventario.add(item)
+                        quizizz_unimet.played = True
+                        proceed()
+                    else:
+                        already_played()
+                else:
+                    proceed()
 
             elif option == '2':
-                #SAMAN
-                option = saman.interact()
+                #SAMAN / LOGICA EMOJIS
+                if 'titulo universitario' and 'mensaje' not in inventario.bag:
+                    lives = lose_lives(lives,1)
+                option = saman.interact(inventario.bag)
                 if option:
-                    pass
+                    if not encuentra_logica.played:
+                        q = create_q_list(encuentra_logica.questions,len(encuentra_logica.questions),1)[0]
+                        item,lives = encuentra_logica.play_encuentra_logica(lives,q)
+                        inventario.add(item)
+                        encuentra_logica.played = True
+                        proceed()
+                    else:
+                        already_played()
+                else:
+                    proceed()
 
             elif option == '3':
-                #BANCO 2
-                option = banco_2.interact()
+                #BANCO 2 / MEMORIA
+                option = banco_2.interact(inventario.bag)
                 if option:
-                    pass
+                    if not memoria.played:
+                        q = create_q_list(memoria.questions,len(memoria.questions),1)[0]
+                        item,lives = memoria.play_memoria(lives,q)
+                        inventario.add(item)
+                        memoria.played = True
+                        proceed()
+                    else:
+                        already_played()
+                else:
+                    proceed()
 
             elif option == 'l':
                 give_up()
@@ -200,21 +260,34 @@ def main():
 
             elif option == 'i':
                 print(inventario.show())
+                proceed()
 
         elif player.current_room == pasillo:
             #PASILLO
             wipe()
-            print(pasillo_drawing(lives,clues))
+            print(pasillo_drawing(lives,clues,timer))
             option = select.t().lower()
 
             if option == '1':
                 #PUERTA PASILLO
-                option = puerta_pasillo.interact()
+                option = puerta_pasillo.interact(inventario.bag)
                 if option:
-                    pass
+                    if not logica_booleana.played:
+                        q_list = create_q_list(logica_booleana.questions,len(logica_booleana.questions),2)
+                        q = q_list[0]
+                        a = q_list[1]
+                        item,lives = logica_booleana.play_logica_booleana(lives,q,a)
+                        inventario.add(item)
+                        logica_booleana.played = True
+                        proceed()
+                    else:
+                        already_played()
+                else:
+                    proceed()
 
             elif option == 'i':
                 print(inventario.show())
+                proceed()
 
             else:
                 player.move(biblioteca)
@@ -222,7 +295,7 @@ def main():
         elif player.current_room == laboratorio:
             #LABORATORIO
             wipe()
-            print(laboratorio_drawing(lives,clues))
+            print(laboratorio_drawing(lives,clues,timer))
             option = select.t().lower()
 
             if option == '1':
@@ -230,12 +303,14 @@ def main():
 
             elif option == '2':
                 #PIZARRA
-                option = pizarra.interact()
+                option = pizarra.interact(inventario.bag)
                 if option:
                     q_list = create_q_list(sopa_letras.questions,len(sopa_letras.questions),3)
                     c_list = create_c_list(sopa_letras.questions,len(sopa_letras.questions),3)
                     item = sopa_letras.play_sopa_letras(lives,clues,q_list,c_list)
                     inventario.add(item)
+                else:
+                    proceed()
 
             elif option == '3':
                 pass
@@ -248,11 +323,12 @@ def main():
 
             elif option == 'i':
                 print(inventario.show())
+                proceed()
 
         elif player.current_room == servidores:
             #SERVIDORES
             wipe()
-            print(servidores_drawing(lives,clues))
+            print(servidores_drawing(lives,clues,timer))
             option = select.t().lower()
 
             if option == '1':
@@ -269,6 +345,7 @@ def main():
 
             elif option == 'i':
                 print(inventario.show())
+                proceed()
     
 
 

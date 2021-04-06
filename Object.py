@@ -18,14 +18,14 @@ class Object:
                 return True
             return False
 
-        if not inv:
-            print(self.game['message_requirement'])
-            return False
+        if inv:
+            for item in inv:
+                if req.lower() == item.lower():
+                    print(f'Has usado: {item}.')
+                    print('Juego desbloqueado!\n')
+                    self.game['requirement'] = False
+                    
+                    return self.game['requirement']
 
-        for item in inv:
-            if req.lower() == item.lower():
-                print(f'Has usado: {item}.')
-                print('Juego desbloqueado!\n')
-                self.game['requirement'] = False
-                
-                return self.game['requirement']
+        print(self.game['message_requirement'])
+        return False

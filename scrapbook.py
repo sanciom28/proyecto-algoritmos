@@ -62,7 +62,11 @@ import time
 # print(word)
 # print(flip)
 
-zero = time.time()
-time.sleep(1)
-one = time.time()
-print(one-zero)
+# zero = time.time()
+# time.sleep(1)
+# one = time.time()
+# print(one-zero)
+
+
+if not ahorcado:
+    print(23433)

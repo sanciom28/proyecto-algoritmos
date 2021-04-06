@@ -19,9 +19,16 @@ class Inventory:
         '''Shows inventory's contents.'''
         if not self.bag:
             return 'Tu inventario está vacío.'
-        s = ''
+        s = 'Inventario:\n'
         for i in self.bag:
             s += (f'- {i}\n')
 
         return s
+
+    def check(self,lives):
+        '''Reviews some stuff.'''
+        if 'vida extra' in self.bag:
+            lives += 1
+            self.bag.remove('vida extra')
+        return lives
 

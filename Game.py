@@ -15,6 +15,7 @@ class Game:
         self.award = award
         self.rules = rules
         self.questions = questions
+        self.played = False
         
     def show(self):
         '''Show game description'''
@@ -159,6 +160,7 @@ class Game:
 
         blank()
         you_won(self.name)
+        blank()
 
         return self.award
 
@@ -220,6 +222,7 @@ class Game:
         blank()
         correct()
         you_won(self.name)
+        blank()
 
         return self.award
 
@@ -255,6 +258,7 @@ class Game:
         blank()
         correct()
         you_won(self.name)
+        blank()
         
         return self.award
 
@@ -359,10 +363,16 @@ class Game:
         you_won(self.name)
         blank()
 
-        return self.award
+        return self.award,lives,clues
 
     def play_preguntas_math(self,lives,clues,q,clue_list):
         '''Preguntas matemáticas.'''
+
+        #RIP
+        print('Juego no disponible por los momentos.\nDisculpe los inconvenientes causados.\n')
+        you_won(self.name)
+
+        return self.award,lives,clues
 
         #VARIABLES
         a = 'a'
@@ -464,7 +474,7 @@ class Game:
         blank()
         you_won(self.name)
 
-        return self.award
+        return self.award,lives
 
     def play_encuentra_logica(self,lives,q):
         '''Lógica booleana.'''
@@ -530,7 +540,7 @@ class Game:
         correct()
         you_won(self.name)
         
-        return self.award
+        return self.award,lives
 
     def play_quizizz_unimet(self,lives,clues,db):
         '''Quizziz de cultura general UNIMET.'''
@@ -593,13 +603,11 @@ class Game:
                 lives = lose_lives(lives,0.5)
 
         
+        blank()
         you_won(self.name)
         blank()
 
-        return self.award
-
-        while True:
-            pass
+        return self.award,lives,clues
 
     def play_memoria(self,lives,q):
         '''Memoria.'''
@@ -671,8 +679,9 @@ class Game:
 
         blank()
         you_won(self.name)
+        blank()
 
-        return self.award
+        return self.award,lives
         
     def play_logica_booleana(self,lives,q,a):
         '''lógica booleana.'''
@@ -692,8 +701,10 @@ class Game:
 
         blank()
         correct()
+        you_won(self.name)
+        blank()
         
-        return self.award
+        return self.award,lives
 
     def play_palabra_mezclada(self,lives,q,c,a,f): #TODO: correct answer list bugs
         '''Descifrar varias palabras revueltas.'''
@@ -738,6 +749,7 @@ class Game:
                 lives = lose_lives(lives,0.5)
                 blank()
 
+        blank()
         you_won(self.name)
         blank()
 
@@ -778,6 +790,7 @@ class Game:
         blank()
         correct()
         you_won(self.name)
+        blank()
 
         return self.award
 

@@ -50,6 +50,9 @@ def out_of_time():
     print('\nLo siento, te has quedado sin tiempo. 😪\n')
     thanks()
     exit()
+def already_played():
+    print('\nYa jugaste este juego.')
+    proceed()
 
 #SERIALIZACION
 def txt_receiver(txt_name, db):
@@ -64,7 +67,6 @@ def txt_loader(txt_name, db):
     binary_write = open(txt_name, 'wb')
     db = pickle.dump(db, binary_write)
     binary_write.close()
-
 
 #USER REGISTERING INPUT VALIDATIONS
 def enter_username(word,msg_1,msg_2):
@@ -271,10 +273,10 @@ def option_4():
     exit()
 
 #ROOM DRAWINGS
-def biblioteca_drawing(lives,clues):
+def biblioteca_drawing(lives,clues,timer):
     return f'''
-    V I D A S : {lives}
-    P I S T A S : {clues}
+    V I D A S : {lives}                                         T I E M P O : {timer}
+    P I S T A S : {clues}                                  I N V E N T A R I O  ( I )
 
     ----------------------------- B I B L I O T E C A --------------------------
     |   |                                                                  |   |
@@ -293,10 +295,10 @@ def biblioteca_drawing(lives,clues):
     ← P L A Z A  ( L )                            ( R )  L A B O R A T O R I O →
 
     '''
-def plaza_drawing(lives,clues):
+def plaza_drawing(lives,clues,timer):
     return f'''
-    V I D A S : {lives}
-    P I S T A S : {clues}
+    V I D A S : {lives}                                         T I E M P O : {timer}
+    P I S T A S : {clues}                                  I N V E N T A R I O  ( I )
 
     -------------------------------- P L A Z A ---------------------------------
     |                                                                          |
@@ -315,10 +317,10 @@ def plaza_drawing(lives,clues):
     ← R E N D I R S E  ( L )                        ( R )  B I B L I O T E C A →
 
     '''
-def laboratorio_drawing(lives,clues):
+def laboratorio_drawing(lives,clues,timer):
     return f'''
-    V I D A S : {lives}
-    P I S T A S : {clues}
+    V I D A S : {lives}                                         T I E M P O : {timer}
+    P I S T A S : {clues}                                  I N V E N T A R I O  ( I )
 
     -------------------------- L A B O R A T O R I O ---------------------------
     |   |                                                                  |   |
@@ -337,10 +339,10 @@ def laboratorio_drawing(lives,clues):
     ← S E R V I D O R E S  ( L )                    ( R )  B I B L I O T E C A →
 
     '''
-def servidores_drawing(lives,clues):
+def servidores_drawing(lives,clues,timer):
     return f'''
-    V I D A S : {lives}
-    P I S T A S : {clues}
+    V I D A S : {lives}                                         T I E M P O : {timer}
+    P I S T A S : {clues}                                  I N V E N T A R I O  ( I )
 
     ------------------- C U A R T O  D E  S E R V I D O R E S ------------------
     |   |                                                                  |   |
@@ -359,10 +361,12 @@ def servidores_drawing(lives,clues):
                                                   ( R )  L A B O R A T O R I O →
 
     '''
-def pasillo_drawing(lives,clues):
+def pasillo_drawing(lives,clues,timer):
     return f'''
     V I D A S : {lives}
     P I S T A S : {clues}
+    T I E M P O : {timer}
+    I N V E N T A R I O  ( I )
 
     ------ P A S I L L O ------
     |\                       /|
@@ -469,3 +473,19 @@ def create_c_list(db,q,n):
     for i in range(n):
         arr.pop(0)
     return arr
+
+#TIME FUNCTIONS
+def seconds_calc(timer):
+    '''Calculate seconds.'''
+    if timer < 10:
+        min = str(timer)[:2]
+        sec = str(timer)[2:]
+    else:
+        min = str(timer)[:3]
+        sec = str(timer)[3:]
+
+    sec = (int(sec) / 100) * 60
+    timer = min + str(sec)
+
+    return timer
+
